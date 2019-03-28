@@ -34,6 +34,7 @@ const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
 const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const SentryWebpackPlugin = require('@sentry/webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 // @remove-on-eject-begin
 const getCacheIdentifier = require('react-dev-utils/getCacheIdentifier');
 // @remove-on-eject-end
@@ -422,6 +423,7 @@ module.exports = function(webpackEnv) {
                 ),
                 // @remove-on-eject-end
                 plugins: [
+                  require.resolve('react-hot-loader/babel'),
                   [
                     require.resolve('babel-plugin-named-asset-import'),
                     {
@@ -615,6 +617,11 @@ module.exports = function(webpackEnv) {
       new webpack.DefinePlugin(env.stringified),
       // This is necessary to emit hot updates (currently CSS only):
       isEnvDevelopment && new webpack.HotModuleReplacementPlugin(),
+      isEnvDevelopment &&
+        new BundleAnalyzerPlugin({
+          openAnalyzer: false,
+          logLevel: 'warn',
+        }),
       // Watcher doesn't work well if you mistype casing in a path so we use
       // a plugin that prints an error when you attempt to do this.
       // See https://github.com/facebook/create-react-app/issues/240

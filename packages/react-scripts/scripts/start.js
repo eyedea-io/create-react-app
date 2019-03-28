@@ -42,10 +42,13 @@ const {
   createCompiler,
   prepareProxy,
   prepareUrls,
-} = require('react-dev-utils/WebpackDevServerUtils');
+} = require('./utils/webpackDevServerUtils');
 const paths = require('../config/paths');
 const configFactory = require('../config/webpack.config');
 const createDevServerConfig = require('../config/webpackDevServer.config');
+const { setConfig } = require('react-hot-loader');
+
+setConfig({ logLevel: 'none' });
 
 const useYarn = fs.existsSync(paths.yarnLockFile);
 const isInteractive = process.stdout.isTTY;
