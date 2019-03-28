@@ -17,8 +17,34 @@ const os = require('os');
 const immer = require('react-dev-utils/immer').produce;
 const globby = require('react-dev-utils/globby').sync;
 
+function getDirectories(path) {
+  return fs.readdirSync(path).filter(function(file) {
+    return fs.statSync(path + '/' + file).isDirectory();
+  });
+}
+
+function getAbsolutPaths() {
+  const directories = getDirectories(paths.workspaces);
+  let absolutePaths = {};
+
+  if (directories.length) {
+    return directories.reduce(
+      (all, workspace) => ({
+        ...all,
+        [`@${workspace}/*`]: [`./workspaces/${workspace}/*`],
+      }),
+      {}
+    );
+  }
+
+  return absolutePaths;
+}
+
 function writeJson(fileName, object) {
-  fs.writeFileSync(fileName, JSON.stringify(object, null, 2).replace(/\n/g, os.EOL) + os.EOL);
+  fs.writeFileSync(
+    fileName,
+    JSON.stringify(object, null, 2).replace(/\n/g, os.EOL) + os.EOL
+  );
 }
 
 function verifyNoTypeScript() {
@@ -87,7 +113,6 @@ function verifyTypeScriptSetup() {
     console.error();
     process.exit(1);
   }
-
   const compilerOptions = {
     // These are suggested values and will be set when not present in the
     // tsconfig.json
@@ -127,10 +152,13 @@ function verifyTypeScriptSetup() {
     // We do not support absolute imports, though this may come as a future
     // enhancement
     baseUrl: {
-      value: undefined,
-      reason: 'absolute imports are not supported (yet)',
+      suggested: './',
+      reason: 'add support for absolute imports',
     },
-    paths: { value: undefined, reason: 'aliased imports are not supported' },
+    paths: {
+      value: getAbsolutPaths(),
+      reason: 'add support for absolut imports',
+    },
   };
 
   const formatDiagnosticHost = {
@@ -206,6 +234,8 @@ function verifyTypeScriptSetup() {
           )} value: ${chalk.cyan.bold(suggested)} (this can be changed)`
         );
       }
+    } else if (option === 'paths') {
+      appTsConfig.compilerOptions[option] = value;
     } else if (parsedCompilerOptions[option] !== valueToCheck) {
       appTsConfig.compilerOptions[option] = value;
       messages.push(
@@ -219,9 +249,23 @@ function verifyTypeScriptSetup() {
 
   // tsconfig will have the merged "include" and "exclude" by this point
   if (parsedTsConfig.include == null) {
-    appTsConfig.include = ['src'];
+    appTsConfig.include = ['workspaces'];
+
     messages.push(
-      `${chalk.cyan('include')} should be ${chalk.cyan.bold('src')}`
+      `${chalk.cyan('include')} should be ${chalk.cyan.bold('workspaces')}`
+    );
+  }
+
+  if (parsedTsConfig.exclude == null) {
+    appTsConfig.exclude = [
+      'workspaces/**/webpack.config.js',
+      'workspaces/**/env.config.js',
+    ];
+
+    messages.push(
+      `${chalk.cyan('exclude')} should contain ${chalk.cyan.bold(
+        'webpack'
+      )} and ${chalk.cyan.bold('env')} config`
     );
   }
 
@@ -255,7 +299,7 @@ function verifyTypeScriptSetup() {
   if (!fs.existsSync(paths.appTypeDeclarations)) {
     fs.writeFileSync(
       paths.appTypeDeclarations,
-      `/// <reference types="react-scripts" />${os.EOL}`
+      `/// <reference types="smashing-scripts" />${os.EOL}`
     );
   }
 }

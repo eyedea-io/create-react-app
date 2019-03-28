@@ -188,6 +188,11 @@ function build(previousFileSizes) {
 }
 
 function copyPublicFolder() {
+  fs.copySync(
+    require.resolve('../config/.syncanoignore'),
+    path.resolve(paths.appBuild, '.syncanoignore')
+  );
+
   fs.copySync(paths.appPublic, paths.appBuild, {
     dereference: true,
     filter: file => file !== paths.appHtml,

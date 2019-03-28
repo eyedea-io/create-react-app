@@ -95,27 +95,33 @@ module.exports = {
 // @remove-on-eject-begin
 const resolveOwn = relativePath => path.resolve(__dirname, '..', relativePath);
 
+const argv = process.argv.slice(2);
+const workspace = argv[0];
+
 // config before eject: we're in ./node_modules/react-scripts/config/
 module.exports = {
   dotenv: resolveApp('.env'),
+  workspaces: resolveApp('workspaces'),
   appPath: resolveApp('.'),
-  appBuild: resolveApp('build'),
-  appPublic: resolveApp('public'),
-  appHtml: resolveApp('public/index.html'),
-  appIndexJs: resolveModule(resolveApp, 'src/index'),
+  appBuild: resolveApp(`build/${workspace}`),
+  appWebpackConfig: resolveApp(`workspaces/${workspace}/webpack.config.js`),
+  appEnvConfig: resolveApp(`workspaces/${workspace}/env.config.js`),
+  appPublic: resolveApp(`workspaces/${workspace}/public`),
+  appHtml: resolveApp(`workspaces/${workspace}/public/index.html`),
+  appIndexJs: resolveModule(resolveApp, `workspaces/${workspace}/index`),
   appPackageJson: resolveApp('package.json'),
-  appSrc: resolveApp('src'),
+  appSrc: resolveApp(`workspaces/${workspace}`),
   appTsConfig: resolveApp('tsconfig.json'),
   yarnLockFile: resolveApp('yarn.lock'),
-  testsSetup: resolveModule(resolveApp, 'src/setupTests'),
-  proxySetup: resolveApp('src/setupProxy.js'),
+  testsSetup: resolveModule(resolveApp, `workspaces/${workspace}/setupTests`),
+  proxySetup: resolveApp(`workspaces/${workspace}/setupProxy.js`),
   appNodeModules: resolveApp('node_modules'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
   // These properties only exist before ejecting:
   ownPath: resolveOwn('.'),
   ownNodeModules: resolveOwn('node_modules'), // This is empty on npm 3
-  appTypeDeclarations: resolveApp('src/react-app-env.d.ts'),
+  appTypeDeclarations: resolveApp(`workspaces/${workspace}/react-app-env.d.ts`),
   ownTypeDeclarations: resolveOwn('lib/react-app.d.ts'),
 };
 
@@ -134,22 +140,23 @@ if (
     dotenv: resolveOwn('template/.env'),
     appPath: resolveApp('.'),
     appBuild: resolveOwn('../../build'),
-    appPublic: resolveOwn('template/public'),
-    appHtml: resolveOwn('template/public/index.html'),
-    appIndexJs: resolveModule(resolveOwn, 'template/src/index'),
+    workspaces: resolveApp('template/workspaces'),
+    appPublic: resolveOwn('template/workspaces/app/public'),
+    appHtml: resolveOwn('template/workspaces/app/public/index.html'),
+    appIndexJs: resolveModule(resolveOwn, 'template/workspaces/app/index'),
     appPackageJson: resolveOwn('package.json'),
-    appSrc: resolveOwn('template/src'),
+    appSrc: resolveOwn('template/workspaces/app'),
     appTsConfig: resolveOwn('template/tsconfig.json'),
     yarnLockFile: resolveOwn('template/yarn.lock'),
-    testsSetup: resolveModule(resolveOwn, 'template/src/setupTests'),
-    proxySetup: resolveOwn('template/src/setupProxy.js'),
+    testsSetup: resolveModule(resolveOwn, 'template/setupTests'),
+    proxySetup: resolveOwn('template/setupProxy.js'),
     appNodeModules: resolveOwn('node_modules'),
     publicUrl: getPublicUrl(resolveOwn('package.json')),
     servedPath: getServedPath(resolveOwn('package.json')),
     // These properties only exist before ejecting:
     ownPath: resolveOwn('.'),
     ownNodeModules: resolveOwn('node_modules'),
-    appTypeDeclarations: resolveOwn('template/src/react-app-env.d.ts'),
+    appTypeDeclarations: resolveOwn('template/workspaces/react-app-env.d.ts'),
     ownTypeDeclarations: resolveOwn('lib/react-app.d.ts'),
   };
 }

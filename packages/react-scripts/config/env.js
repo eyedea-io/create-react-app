@@ -9,6 +9,7 @@
 'use strict';
 
 const fs = require('fs');
+const chalk = require('react-dev-utils/chalk');
 const path = require('path');
 const paths = require('./paths');
 
@@ -64,6 +65,29 @@ process.env.NODE_PATH = (process.env.NODE_PATH || '')
   .map(folder => path.resolve(appDirectory, folder))
   .join(path.delimiter);
 
+let workspaceEnv = [];
+
+if (fs.existsSync(paths.appEnvConfig)) {
+  const customEnv = require(paths.appEnvConfig);
+
+  if (
+    !Array.isArray(customEnv) ||
+    customEnv.some(item => typeof item !== 'string')
+  ) {
+    console.log();
+    console.log(
+      `${chalk.red(
+        'env.config.js should export array of env variable names. It can contain only strings.'
+      )}`
+    );
+    console.log(`Path: ${paths.appEnvConfig}`);
+    console.log();
+    process.exit(1);
+  }
+
+  workspaceEnv = require(paths.appEnvConfig);
+}
+
 // Grab NODE_ENV and REACT_APP_* environment variables and prepare them to be
 // injected into the application via DefinePlugin in Webpack configuration.
 const REACT_APP = /^REACT_APP_/i;
@@ -71,6 +95,7 @@ const REACT_APP = /^REACT_APP_/i;
 function getClientEnvironment(publicUrl) {
   const raw = Object.keys(process.env)
     .filter(key => REACT_APP.test(key))
+    .concat(workspaceEnv)
     .reduce(
       (env, key) => {
         env[key] = process.env[key];

@@ -31,9 +31,15 @@ const getClientEnvironment = require('./env');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
+const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
+const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 // @remove-on-eject-begin
 const getCacheIdentifier = require('react-dev-utils/getCacheIdentifier');
 // @remove-on-eject-end
+
+// const argv = process.argv.slice(2)
+// const workspace = argv[1]
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
@@ -50,11 +56,22 @@ const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
 
+try {
+  process.env.RELEASE = require('child_process')
+    .execSync('git rev-parse HEAD')
+    .toString()
+    .trim();
+} catch (err) {
+  // Git is not iniialized
+}
+
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
 module.exports = function(webpackEnv) {
   const isEnvDevelopment = webpackEnv === 'development';
   const isEnvProduction = webpackEnv === 'production';
+  // const argv = process.argv.slice(2);
+  // const workspace = argv[1];
 
   // Webpack uses `publicPath` to determine where the app is being served from.
   // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -123,7 +140,7 @@ module.exports = function(webpackEnv) {
     return loaders;
   };
 
-  return {
+  return mergeWithCustomConfig({
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
     // Stop compilation early in production
     bail: isEnvProduction,
@@ -243,12 +260,25 @@ module.exports = function(webpackEnv) {
         }),
       ],
       // Automatically split vendor and commons
-      // https://twitter.com/wSokra/status/969633336732905474
-      // https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
-      splitChunks: {
-        chunks: 'all',
-        name: false,
-      },
+      splitChunks: isEnvDevelopment
+        ? {
+            cacheGroups: {
+              default: false,
+              vendors: false,
+            },
+          }
+        : {
+            chunks: 'all',
+            cacheGroups: {
+              default: false,
+              vendors: false,
+              react: {
+                name: 'commons',
+                chunks: 'all',
+                test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+              },
+            },
+          },
       // Keep the runtime chunk separated to enable long term caching
       // https://twitter.com/wSokra/status/969679223278505985
       runtimeChunk: true,
@@ -271,12 +301,23 @@ module.exports = function(webpackEnv) {
       extensions: paths.moduleFileExtensions
         .map(ext => `.${ext}`)
         .filter(ext => useTypeScript || !ext.includes('ts')),
-      alias: {
-        // Support React Native Web
-        // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
-        'react-native': 'react-native-web',
-      },
+      alias: Object.assign(
+        {},
+        {
+          // Support React Native Web
+          // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
+          'react-native': 'react-native-web',
+        },
+        isEnvDevelopment
+          ? {
+              'react-dom': '@hot-loader/react-dom',
+            }
+          : {}
+      ),
       plugins: [
+        new TsconfigPathsPlugin({
+          configFile: paths.appTsConfig,
+        }),
         // Adds support for installing with Plug'n'Play, leading to faster installs and adding
         // guards against forgotten dependencies and such.
         PnpWebpackPlugin,
@@ -323,6 +364,15 @@ module.exports = function(webpackEnv) {
             },
           ],
           include: paths.appSrc,
+        },
+        {
+          test: /\.(js|mjs|jsx|ts|tsx)$/,
+          enforce: 'pre',
+          include: paths.workspaces,
+          loader: require.resolve('stylelint-custom-processor-loader'),
+          options: {
+            configPath: require.resolve('./stylelint.json'),
+          },
         },
         {
           // "oneOf" will traverse all following loaders until one will
@@ -582,6 +632,18 @@ module.exports = function(webpackEnv) {
           filename: 'static/css/[name].[contenthash:8].css',
           chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
         }),
+      isEnvProduction &&
+        process.env.SENTRY_AUTH_TOKEN &&
+        process.env.SENTRY_ORG &&
+        process.env.SENTRY_PROJECT &&
+        new SentryWebpackPlugin({
+          include: paths.workspaceBuild,
+          ext: ['map'],
+          release: process.env.RELEASE,
+          ignoreFile: '.sentrycliignore',
+          ignore: ['node_modules', 'webpack.config.js'],
+          configFile: 'sentry.properties',
+        }),
       // Generate a manifest file which contains a mapping of all asset filenames
       // to their corresponding output file so that tools can pick it up without
       // having to parse `index.html`.
@@ -596,7 +658,25 @@ module.exports = function(webpackEnv) {
       // You can remove this if you don't use Moment.js:
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
       // Generate a service worker script that will precache, and keep up to date,
-      // the HTML & assets that are part of the Webpack build.
+      // the HTML & assets that are part of the Webpack build.        isEnvProduction &&
+      isEnvProduction &&
+        new CompressionPlugin({
+          filename: '[path].br[query]',
+          algorithm: 'brotliCompress',
+          test: /\.(js|css|html|svg)$/,
+          compressionOptions: { level: 11 },
+          threshold: 10240,
+          minRatio: 0.8,
+        }),
+      isEnvProduction &&
+        new CompressionPlugin({
+          filename: '[path].gz[query]',
+          algorithm: 'gzip',
+          test: /\.(js|css|html|svg)$/,
+          compressionOptions: { level: 9 },
+          threshold: 10240,
+          minRatio: 0.8,
+        }),
       isEnvProduction &&
         new WorkboxWebpackPlugin.GenerateSW({
           clientsClaim: true,
@@ -649,5 +729,17 @@ module.exports = function(webpackEnv) {
     // Turn off performance processing because we utilize
     // our own hints via the FileSizeReporter
     performance: false,
-  };
+  });
 };
+
+function mergeWithCustomConfig(config) {
+  if (fs.existsSync(paths.appWebpackConfig)) {
+    const customConfig = require(paths.appWebpackConfig);
+
+    return typeof customConfig === 'function'
+      ? customConfig(config)
+      : customConfig;
+  }
+
+  return config;
+}

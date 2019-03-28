@@ -95,7 +95,7 @@ module.exports = function(
 
   // Setup the script rules
   appPackage.scripts = {
-    start: 'react-scripts start',
+    dev: 'react-scripts dev',
     build: 'react-scripts build',
     test: 'react-scripts test',
     eject: 'react-scripts eject',
@@ -221,11 +221,11 @@ module.exports = function(
   console.log(`Success! Created ${appName} at ${appPath}`);
   console.log('Inside that directory, you can run several commands:');
   console.log();
-  console.log(chalk.cyan(`  ${displayedCommand} start`));
+  console.log(chalk.cyan(`  ${displayedCommand} dev app`));
   console.log('    Starts the development server.');
   console.log();
   console.log(
-    chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}build`)
+    chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}build app`)
   );
   console.log('    Bundles the app into static files for production.');
   console.log();
