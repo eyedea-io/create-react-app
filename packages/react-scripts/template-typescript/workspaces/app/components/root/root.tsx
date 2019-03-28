@@ -1,4 +1,5 @@
 import React from 'react';
+import {hot} from 'react-hot-loader';
 
 const Root: React.FC = () => {
   return (
@@ -20,4 +21,4 @@ const Root: React.FC = () => {
   );
 }
 
-export default Root;
+export default hot(module)(Root);

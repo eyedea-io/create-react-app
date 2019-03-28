@@ -134,7 +134,7 @@ const reactScriptsLinked =
 // config before publish: we're in ./packages/react-scripts/config/
 if (
   !reactScriptsLinked &&
-  __dirname.indexOf(path.join('packages', 'react-scripts', 'config')) !== -1
+  __dirname.indexOf(path.join('packages', 'smashing-scripts', 'config')) !== -1
 ) {
   module.exports = {
     dotenv: resolveOwn('template/.env'),
