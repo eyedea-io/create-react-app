@@ -103,7 +103,7 @@ module.exports = function(
 
   // Setup the eslint config
   appPackage.eslintConfig = {
-    extends: 'react-app',
+    extends: 'smashing-app',
   };
 
   // Setup the browsers list
