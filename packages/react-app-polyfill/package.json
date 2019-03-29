@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "react-app-polyfill",
   "version": "0.2.2",
   "description": "Polyfills for various browsers including commonly used language features",
