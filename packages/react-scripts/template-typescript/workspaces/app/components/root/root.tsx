@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {hot} from 'react-hot-loader'
 
 const Root: React.FC = () => (
