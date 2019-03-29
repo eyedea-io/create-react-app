@@ -105,6 +105,8 @@ module.exports = {
   // `typescript-eslint`, as some rules such as `no-array-constructor` aren't compatible.
   rules: {
     // http://eslint.org/docs/rules/
+    'object-curly-spacing': ['warn', 'never'],
+    semi: ['warn', 'never'],
     'array-callback-return': 'warn',
     'default-case': ['warn', { commentPattern: '^no default$' }],
     'dot-location': ['warn', 'property'],
