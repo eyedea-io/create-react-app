@@ -1,6 +1,6 @@
 {
   "name": "smashing-scripts",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Configuration and scripts for Create React App.",
   "repository": "eyedea/create-react-app",
   "license": "MIT",
@@ -42,7 +42,7 @@
     "dotenv": "6.2.0",
     "dotenv-expand": "4.2.0",
     "eslint": "5.15.1",
-    "eslint-config-smashing-app": "^0.2.0",
+    "eslint-config-smashing-app": "^0.2.1",
     "eslint-loader": "2.1.2",
     "eslint-plugin-flowtype": "2.50.1",
     "eslint-plugin-import": "2.16.0",
