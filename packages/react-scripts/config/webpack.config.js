@@ -644,7 +644,7 @@ module.exports = function(webpackEnv) {
         process.env.SENTRY_ORG &&
         process.env.SENTRY_PROJECT &&
         new SentryWebpackPlugin({
-          include: paths.workspaceBuild,
+          include: paths.appBuild,
           ext: ['map'],
           release: process.env.RELEASE,
           ignoreFile: '.sentrycliignore',
