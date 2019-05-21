@@ -128,6 +128,8 @@ function verifyTypeScriptSetup() {
     allowSyntheticDefaultImports: { suggested: true },
     strict: { suggested: true },
     forceConsistentCasingInFileNames: { suggested: true },
+    // TODO: Enable for v4.0 (#6936)
+    // noFallthroughCasesInSwitch: { suggested: true },
 
     // These values are required and cannot be changed by the user
     // Keep this in sync with the webpack config
@@ -203,14 +205,17 @@ function verifyTypeScriptSetup() {
 
     parsedCompilerOptions = result.options;
   } catch (e) {
-    console.error(
-      chalk.red.bold(
-        'Could not parse',
-        chalk.cyan('tsconfig.json') + '.',
-        'Please make sure it contains syntactically correct JSON.'
-      )
-    );
-    console.error(e && e.message ? `Details: ${e.message}` : '');
+    if (e && e.name === 'SyntaxError') {
+      console.error(
+        chalk.red.bold(
+          'Could not parse',
+          chalk.cyan('tsconfig.json') + '.',
+          'Please make sure it contains syntactically correct JSON.'
+        )
+      );
+    }
+
+    console.log(e && e.message ? `${e.message}` : '');
     process.exit(1);
   }
 
