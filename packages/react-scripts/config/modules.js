@@ -40,15 +40,15 @@ function getAdditionalModulePaths(options = {}) {
     return null;
   }
 
-  // Allow the user set the `baseUrl` to `appSrc`.
-  if (path.relative(paths.appSrc, baseUrlResolved) === '') {
-    return [paths.appSrc];
+  // Allow the user set the `baseUrl` to `appPath`.
+  if (path.relative(paths.appPath, baseUrlResolved) === '') {
+    return [paths.appPath];
   }
 
   // Otherwise, throw an error.
   throw new Error(
     chalk.red.bold(
-      "Your project's `baseUrl` can only be set to `src` or `node_modules`." +
+      "Your project's `baseUrl` can only be set to `.` or `node_modules`." +
         ' Create React App does not support other values at this time.'
     )
   );
