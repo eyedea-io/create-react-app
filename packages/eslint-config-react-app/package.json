@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-smashing-app",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "ESLint configuration used by Create React App",
   "repository": "eyedea/create-react-app",
   "license": "MIT",
