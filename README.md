@@ -1,4 +1,4 @@
-# Create React App [![Build Status](https://travis-ci.org/facebook/create-react-app.svg?branch=master)](https://travis-ci.org/facebook/create-react-app) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg)](https://github.com/facebook/create-react-app/pulls)
+# Create React App - EYEDEA Version
 
 Create React apps with no build configuration.
 
@@ -6,24 +6,20 @@ Create React apps with no build configuration.
 - [User Guide](https://facebook.github.io/create-react-app/) – How to develop apps bootstrapped with Create React App.
 
 Create React App works on macOS, Windows, and Linux.<br>
-If something doesn’t work, please [file an issue](https://github.com/facebook/create-react-app/issues/new).
+If something doesn’t work, please [file an issue](https://github.com/eyedea-io/create-react-app/issues/new).
 
 ## Quick Overview
 
 ```sh
-npx create-react-app my-app
+npx create-react-app my-app --scripts-version smashing-scripts --typescript
 cd my-app
 npm start
 ```
 
 _([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) comes with npm 5.2+ and higher, see [instructions for older npm versions](https://gist.github.com/gaearon/4064d3c23a77c74a3614c498a8bb1c5f))_
 
-Then open [http://localhost:3000/](http://localhost:3000/) to see your app.<br>
-When you’re ready to deploy to production, create a minified bundle with `npm run build`.
-
-<p align='center'>
-<img src='https://cdn.rawgit.com/facebook/create-react-app/27b42ac/screencast.svg' width='600' alt='npm start'>
-</p>
+Then open [http://localhost:8080/](http://localhost:8080/) to see your app.<br>
+When you’re ready to deploy to production, create a minified bundle with `npm run dev app`.
 
 ### Get Started Immediately
 
@@ -41,26 +37,10 @@ To create a new app, you may choose one of the following methods:
 ### npx
 
 ```sh
-npx create-react-app my-app
+npx create-react-app my-app --scripts-version smashing-scripts --typescript
 ```
 
 _([npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) comes with npm 5.2+ and higher, see [instructions for older npm versions](https://gist.github.com/gaearon/4064d3c23a77c74a3614c498a8bb1c5f))_
-
-### npm
-
-```sh
-npm init react-app my-app
-```
-
-_`npm init <initializer>` is available in npm 6+_
-
-### Yarn
-
-```sh
-yarn create react-app my-app
-```
-
-_`yarn create` is available in Yarn 0.25+_
 
 It will create a directory called `my-app` inside the current folder.<br>
 Inside that directory, it will generate the initial project structure and install the transitive dependencies:
@@ -70,19 +50,19 @@ my-app
 ├── README.md
 ├── node_modules
 ├── package.json
+├── .vscode
 ├── .gitignore
-├── public
-│   ├── favicon.ico
-│   ├── index.html
-│   └── manifest.json
-└── src
-    ├── App.css
-    ├── App.js
-    ├── App.test.js
-    ├── index.css
-    ├── index.js
-    ├── logo.svg
-    └── serviceWorker.js
+├── workspaces
+    └── app
+        ├── components
+        │   └── root
+        ├── public
+        │   ├── favicon.ico
+        │   ├── index.html
+        │   └── manifest.json
+        ├── utils
+        │   └── service-worker.ts
+        └── index.tsx
 ```
 
 No configuration or complicated folder structures, just the files you need to build your app.<br>
@@ -94,10 +74,10 @@ cd my-app
 
 Inside the newly created project, you can run some built-in commands:
 
-### `npm start` or `yarn start`
+### `npm run dev app` or `yarn dev app`
 
 Runs the app in development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
 
 The page will automatically reload if you make changes to the code.<br>
 You will see the build errors and lint warnings in the console.
@@ -113,7 +93,7 @@ By default, runs tests related to files changed since the last commit.
 
 [Read more about testing.](https://facebook.github.io/create-react-app/docs/running-tests)
 
-### `npm run build` or `yarn build`
+### `npm run build app` or `yarn build app`
 
 Builds the app for production to the `build` folder.<br>
 It correctly bundles React in production mode and optimizes the build for the best performance.
@@ -200,4 +180,4 @@ We are grateful to the authors of existing related projects for their ideas and 
 
 ## License
 
-Create React App is open source software [licensed as MIT](https://github.com/facebook/create-react-app/blob/master/LICENSE).
+Create React App is open source software [licensed as MIT](https://github.com/eyedea-io/create-react-app/blob/master/LICENSE).
