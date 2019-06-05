@@ -164,7 +164,15 @@ module.exports = function(
     command = 'npm';
     args = ['install', '--save', verbose && '--verbose'].filter(e => e);
   }
-  args.push('react', 'react-dom', 'react-hot-loader');
+  args.push(
+    'react',
+    'react-dom',
+    'react-hot-loader',
+    'react-router-dom',
+    '@loadable/component',
+    '@types/loadable__component',
+    '@types/react-router-dom'
+  );
 
   // Install additional template dependencies, if present
   const templateDependenciesPath = path.join(
