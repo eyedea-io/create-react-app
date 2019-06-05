@@ -1,6 +1,6 @@
 {
   "name": "smashing-scripts",
-  "version": "0.2.9",
+  "version": "0.2.10-alpha.0+8e9d4a1",
   "description": "Configuration and scripts for Create React App.",
   "repository": "eyedea/create-react-app",
   "license": "MIT",
@@ -43,7 +43,7 @@
     "dotenv": "6.2.0",
     "dotenv-expand": "4.2.0",
     "eslint": "^5.16.0",
-    "eslint-config-smashing-app": "^0.2.4",
+    "eslint-config-smashing-app": "^0.2.5-alpha.0+8e9d4a1",
     "eslint-loader": "2.1.2",
     "eslint-plugin-flowtype": "2.50.1",
     "eslint-plugin-import": "2.16.0",
@@ -111,5 +111,5 @@
       "last 1 safari version"
     ]
   },
-  "gitHead": "7b749d4683a3697cb77517b564cfebc576399e18"
+  "gitHead": "8e9d4a1af961ac7fb3cf5c491cd3160290531cce"
 }
