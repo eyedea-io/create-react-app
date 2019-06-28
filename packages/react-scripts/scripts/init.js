@@ -178,6 +178,8 @@ module.exports = function(
     'mobx',
     'mobx-react-lite',
     'mobx-state-tree',
+    'styled-components',
+    '@types/styled-components',
     '@loadable/component',
     '@types/loadable__component',
     '@types/react-router-dom',
