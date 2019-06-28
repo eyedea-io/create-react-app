@@ -52,6 +52,7 @@ my-app
 ├── package.json
 ├── .vscode
 ├── .gitignore
+├── cypress
 ├── workspaces
     └── app
         ├── components
@@ -92,6 +93,16 @@ Runs the test watcher in an interactive mode.<br>
 By default, runs tests related to files changed since the last commit.
 
 [Read more about testing.](https://facebook.github.io/create-react-app/docs/running-tests)
+
+### `npm run cypress` or `yarn cypress`
+
+Run integration tests in cypress environment.
+
+> If cypress app doesn't open, download app from cypress website and run it manually.
+
+[Read more about cypress.](https://docs.cypress.io/guides/overview/why-cypress.html)
+
+[Read more about BDD.](https://github.com/TheBrainFamily/cypress-cucumber-preprocessor/#feature-files)
 
 ### `npm run build app` or `yarn build app`
 

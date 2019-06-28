@@ -318,7 +318,11 @@ module.exports = function(webpackEnv) {
         },
         isEnvDevelopment
           ? {
-              'react-dom': '@hot-loader/react-dom',
+              // 'react-hot-loader': path.resolve(path.join(paths.appNodeModules, './react-hot-loader')),
+              // 'react': path.resolve(path.join(paths.appNodeModules, './react')),
+              'react-dom': path.resolve(
+                path.join(paths.appNodeModules, './@hot-loader/react-dom')
+              ),
             }
           : {}
       ),

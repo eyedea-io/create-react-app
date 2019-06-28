@@ -99,11 +99,17 @@ module.exports = function(
     build: 'react-scripts build',
     test: 'react-scripts test',
     eject: 'react-scripts eject',
+    cypress: 'cypress open',
   };
 
   // Setup the eslint config
   appPackage.eslintConfig = {
     extends: 'smashing-app',
+  };
+
+  // Setup cypress/cucumber integration
+  appPackage['cypress-cucumber-preprocessor'] = {
+    nonGlobalStepDefinitions: true,
   };
 
   // Setup the browsers list
@@ -169,9 +175,26 @@ module.exports = function(
     'react-dom',
     'react-hot-loader',
     'react-router-dom',
+    'mobx',
+    'mobx-react-lite',
+    'mobx-state-tree',
     '@loadable/component',
     '@types/loadable__component',
-    '@types/react-router-dom'
+    '@types/react-router-dom',
+    '@smashing/alert',
+    '@smashing/avatar',
+    '@smashing/button',
+    '@smashing/css',
+    '@smashing/dialog',
+    '@smashing/head',
+    '@smashing/menu',
+    '@smashing/popover',
+    '@smashing/text-input',
+    '@smashing/title',
+    '@smashing/tooltip',
+    '@smashing/typography',
+    'cypress',
+    'cypress-cucumber-preprocessor'
   );
 
   // Install additional template dependencies, if present
@@ -264,12 +287,3 @@ module.exports = function(
   console.log();
   console.log('Happy hacking!');
 };
-
-function isReactInstalled(appPackage) {
-  const dependencies = appPackage.dependencies || {};
-
-  return (
-    typeof dependencies.react !== 'undefined' &&
-    typeof dependencies['react-dom'] !== 'undefined'
-  );
-}
