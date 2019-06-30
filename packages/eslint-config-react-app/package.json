@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-smashing-app",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "ESLint configuration used by Create React App",
   "repository": "eyedea/create-react-app",
   "license": "MIT",
@@ -15,13 +15,13 @@
     "@typescript-eslint/parser": "1.x",
     "babel-eslint": "10.x",
     "eslint": "5.x",
+    "eslint-plugin-chai-friendly": "0.x",
+    "eslint-plugin-cypress": "2.x",
     "eslint-plugin-flowtype": "2.x",
     "eslint-plugin-import": "2.x",
     "eslint-plugin-jsx-a11y": "6.x",
     "eslint-plugin-react": "7.x",
-    "eslint-plugin-react-hooks": "1.x",
-    "eslint-plugin-cypress": "2.x",
-    "eslint-plugin-chai-friendly": "0.x"
+    "eslint-plugin-react-hooks": "1.x"
   },
   "dependencies": {
     "confusing-browser-globals": "^1.0.7"
