@@ -26,11 +26,22 @@ const restrictedGlobals = require('confusing-browser-globals');
 module.exports = {
   root: true,
 
+  extends: ['plugin:cypress/recommended'],
+
   parser: 'babel-eslint',
 
-  plugins: ['import', 'flowtype', 'jsx-a11y', 'react', 'react-hooks'],
+  plugins: [
+    'import',
+    'flowtype',
+    'jsx-a11y',
+    'react',
+    'react-hooks',
+    'cypress',
+    'chai-friendly',
+  ],
 
   env: {
+    'cypress/globals': true,
     browser: true,
     commonjs: true,
     es6: true,
@@ -191,14 +202,10 @@ module.exports = {
     'no-restricted-globals': ['error'].concat(restrictedGlobals),
     'no-unexpected-multiline': 'warn',
     'no-unreachable': 'warn',
-    'no-unused-expressions': [
-      'error',
-      {
-        allowShortCircuit: true,
-        allowTernary: true,
-        allowTaggedTemplates: true,
-      },
-    ],
+    rules: {
+      'no-unused-expressions': 0,
+      'chai-friendly/no-unused-expressions': 2,
+    },
     'no-unused-labels': 'warn',
     'no-unused-vars': [
       'warn',

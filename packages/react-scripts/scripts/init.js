@@ -195,8 +195,7 @@ module.exports = function(
     '@smashing/title',
     '@smashing/tooltip',
     '@smashing/typography',
-    'cypress',
-    'cypress-cucumber-preprocessor'
+    'cypress'
   );
 
   // Install additional template dependencies, if present
