@@ -153,7 +153,7 @@ module.exports = {
     'no-lone-blocks': 'warn',
     'no-loop-func': 'warn',
     'no-restricted-imports': [
-      'error',
+      'warn',
       {
         paths: [
           {
