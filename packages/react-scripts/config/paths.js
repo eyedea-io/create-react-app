@@ -73,6 +73,9 @@ const resolveModule = (resolveFn, filePath) => {
   return resolveFn(`${filePath}.js`);
 };
 
+const argv = process.argv.slice(2);
+const workspace = argv[0];
+
 // config after eject: we're in ./config/
 module.exports = {
   dotenv: resolveApp('.env'),
@@ -96,9 +99,6 @@ module.exports = {
 
 // @remove-on-eject-begin
 const resolveOwn = relativePath => path.resolve(__dirname, '..', relativePath);
-
-const argv = process.argv.slice(2);
-const workspace = argv[0];
 
 // config before eject: we're in ./node_modules/react-scripts/config/
 module.exports = {
