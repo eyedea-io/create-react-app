@@ -79,6 +79,7 @@ const workspace = argv[0];
 // config after eject: we're in ./config/
 module.exports = {
   dotenv: resolveApp('.env'),
+  workspaces: resolveApp('workspaces'),
   appPath: resolveApp('.'),
   appBuild: resolveApp(`build/${workspace}`),
   appPublic: resolveApp(`workspaces/${workspace}/public`),
