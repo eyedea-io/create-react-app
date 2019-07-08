@@ -77,20 +77,21 @@ const resolveModule = (resolveFn, filePath) => {
 module.exports = {
   dotenv: resolveApp('.env'),
   appPath: resolveApp('.'),
-  appBuild: resolveApp('build'),
-  appPublic: resolveApp('public'),
-  appHtml: resolveApp('public/index.html'),
-  appIndexJs: resolveModule(resolveApp, 'src/index'),
+  appBuild: resolveApp(`build/${workspace}`),
+  appPublic: resolveApp(`workspaces/${workspace}/public`),
   appPackageJson: resolveApp('package.json'),
-  appSrc: resolveApp('src'),
+  appSrc: resolveApp(`workspaces/${workspace}`),
+  appHtml: resolveApp(`workspaces/${workspace}/public/index.html`),
+  appIndexJs: resolveModule(resolveApp, `workspaces/${workspace}/index`),
   appTsConfig: resolveApp('tsconfig.json'),
   appJsConfig: resolveApp('jsconfig.json'),
   yarnLockFile: resolveApp('yarn.lock'),
-  testsSetup: resolveModule(resolveApp, 'src/setupTests'),
-  proxySetup: resolveApp('src/setupProxy.js'),
+  testsSetup: resolveModule(resolveApp, `workspaces/${workspace}/setupTests`),
+  proxySetup: resolveApp(`workspaces/${workspace}/setupProxy.js`),
   appNodeModules: resolveApp('node_modules'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
+  appTypeDeclarations: resolveApp(`workspaces/${workspace}/react-app-env.d.ts`),
 };
 
 // @remove-on-eject-begin
