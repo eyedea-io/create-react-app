@@ -242,6 +242,7 @@ module.exports = {
     'unicode-bom': ['warn', 'never'],
     'use-isnan': 'warn',
     'valid-typeof': 'warn',
+    quotes: ['warn', 'single'],
     'no-restricted-properties': [
       'error',
       {
