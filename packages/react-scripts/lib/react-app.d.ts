@@ -62,3 +62,8 @@ declare module '*.module.sass' {
   const classes: { [key: string]: string };
   export default classes;
 }
+
+// Fix console auto import
+declare module 'console' {
+  export = typeof import('console')
+}
