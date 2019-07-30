@@ -38,6 +38,7 @@ module.exports = {
     'react-hooks',
     'cypress',
     'chai-friendly',
+    'filenames',
   ],
 
   env: {
@@ -259,6 +260,9 @@ module.exports = {
       },
     ],
     'getter-return': 'warn',
+
+    // https://github.com/selaux/eslint-plugin-filenames#rules
+    'filenames/match-regex': ['warn', '^[a-z-.]+$', true],
 
     // https://github.com/benmosher/eslint-plugin-import/tree/master/docs/rules
     'import/first': 'error',
