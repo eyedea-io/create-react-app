@@ -310,7 +310,9 @@ module.exports = function(webpackEnv) {
         .map(ext => `.${ext}`)
         .filter(ext => useTypeScript || !ext.includes('ts')),
       alias: Object.assign(
-        {},
+        {
+          '@app/*': path.resolve(__dirname, 'workspaces/app/*'),
+        },
         {
           // Support React Native Web
           // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
@@ -369,7 +371,7 @@ module.exports = function(webpackEnv) {
                   extends: [require.resolve('eslint-config-smashing-app')],
                 },
                 ignore: false,
-                useEslintrc: false,
+                useEslintrc: true,
                 // @remove-on-eject-end
               },
               loader: require.resolve('eslint-loader'),
@@ -739,8 +741,8 @@ module.exports = function(webpackEnv) {
             '**',
             '!**/__tests__/**',
             '!**/?(*.)(spec|test).*',
-            '!**/src/setupProxy.*',
-            '!**/src/setupTests.*',
+            '!**/workspaces/**/setupProxy.*',
+            '!**/workspaces/**/setupTests.*',
           ],
           watch: paths.appSrc,
           silent: true,

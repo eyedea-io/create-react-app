@@ -57,6 +57,15 @@ module.exports = (resolve, rootDir, isEjecting) => {
     moduleNameMapper: {
       '^react-native$': 'react-native-web',
       '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
+      // TODO: These list should be based on the content of workspaces directory
+      '@common/(.*)': '<rootDir>/workspaces/common/$1',
+      '@shared/(.*)': '<rootDir>/workspaces/shared/$1',
+      '@website/(.*)': '<rootDir>/workspaces/website/$1',
+      '@dashboard/(.*)': '<rootDir>/workspaces/dashboard/$1',
+      '@landing/(.*)': '<rootDir>/workspaces/landing/$1',
+      '@mobile/(.*)': '<rootDir>/workspaces/mobile/$1',
+      '@admin/(.*)': '<rootDir>/workspaces/admin/$1',
+      '@app/(.*)': '<rootDir>/workspaces/app/$1',
     },
     moduleFileExtensions: [...paths.moduleFileExtensions, 'node'].filter(
       ext => !ext.includes('mjs')

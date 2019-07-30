@@ -130,5 +130,6 @@ if (!resolvedEnv) {
 }
 const testEnvironment = resolvedEnv || env;
 argv.push('--env', testEnvironment);
+argv.push('--passWithNoTests');
 // @remove-on-eject-end
 jest.run(argv);
