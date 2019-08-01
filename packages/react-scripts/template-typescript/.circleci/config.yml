@@ -1,0 +1,263 @@
+version: 2
+
+setup-env: &setup-env
+  run:
+    name: Setting up env variables
+    command: |
+      if [ "${CIRCLE_BRANCH}" == "production" ]; then
+        echo 'export SENTRY_ENV=production' >> $BASH_ENV
+        env=PRODUCTION
+      else
+        echo 'export SENTRY_ENV=staging' >> $BASH_ENV
+        env=STAGING
+      fi
+
+      eval echo 'export SYNCANO_PROJECT_INSTANCE=\$${env}_SYNCANO_PROJECT_INSTANCE' >> $BASH_ENV
+      eval echo 'export PUBLIC_URL=\$${env}_PUBLIC_URL' >> $BASH_ENV
+      echo 'export SYNCANO_AUTH_KEY=$SYNCANO_AUTH_KEY' >> $BASH_ENV
+
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: cypress/base:12.6.0
+
+jobs:
+  install:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - cache-v2-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - cache-v2-dependencies-
+      - run:
+          name: Create GitHub Deployment
+          command: ./tasks/deployment/start.sh > deployment
+      - run:
+          name: Installing dependencies
+          command: yarn --frozen-lockfile
+      - save_cache:
+          paths:
+            - /root/.cache
+          key: cache-v2-{{ checksum "package.json" }}
+      - persist_to_workspace:
+          root: .
+          paths:
+            - deployment
+            - node_modules
+
+  spellcheck:
+    <<: *defaults
+    steps:
+      - checkout
+      - *setup-env
+      - attach_workspace:
+          at: .
+      - run:
+          name: Spellcheck
+          command: npx cspell "workspaces/**/*.tsx" "workspaces/**/*.ts"
+
+  build-app:
+    <<: *defaults
+    steps:
+      - checkout
+      - *setup-env
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build app workspace
+          command: yarn build app
+      - store_artifacts:
+          path: build/app
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build/app
+
+  test-unit:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Running unit tests
+          command: yarn test-unit app --coverage
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage
+
+  test-integration:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - cache-v2-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - cache-v2-dependencies-
+      - attach_workspace:
+          at: .
+      - run:
+          name: Running unit tests
+          command: yarn test-integration
+      - store_artifacts:
+          path: cypress
+
+  upload-app:
+    <<: *defaults
+    steps:
+      - checkout
+      - *setup-env
+      - attach_workspace:
+          at: .
+      - run:
+          name: Uploading app and setting CNAME
+          command: |
+            npx syncano-cli hosting sync app
+            npx syncano-cli hosting config app -b true # --cname YOUR_CNAME
+
+  upload-staging-app:
+    <<: *defaults
+    steps:
+      - checkout
+      - *setup-env
+      - attach_workspace:
+          at: .
+      - run:
+          name: Uploading app and setting CNAME
+          command: |
+            npx syncano-cli hosting sync app
+            npx syncano-cli hosting config app -b true # --cname YOUR_CNAME
+
+  deploy-sockets:
+    <<: *defaults
+    steps: &deploy-sockets-steps
+      - checkout
+      - *setup-env
+      - attach_workspace:
+          at: .
+      - run:
+          name: Installing sockets dependencies
+          command: |
+            # yarn --cwd syncano/socket-name
+            # yarn --cwd syncano/socket-name
+            # yarn --cwd syncano/socket-name
+      - run: npx syncano-cli deploy
+
+  configure-sentry-deploy-tracking:
+    <<: *defaults
+    steps:
+      - checkout
+      - *setup-env
+      - attach_workspace:
+          at: .
+      - run: echo 'export VERSION=$(npx sentry-cli releases propose-version)' >> $BASH_ENV
+      - run: npx sentry-cli releases new -p $SENTRY_PROJECT $VERSION
+      - run: npx sentry-cli releases set-commits --auto $VERSION
+      - run: npx sentry-cli releases deploys $VERSION new -e $SENTRY_ENV
+
+  report-coverage:
+    <<: *defaults
+    steps:
+      - checkout
+      - *setup-env
+      - attach_workspace:
+          at: .
+      - run:
+          name: Report CodeCov
+          command: npx codecov
+
+  test-lighthouse:
+    <<: *defaults
+    steps:
+      - checkout
+      - *setup-env
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run Lighthouse Test
+          command: npx lighthouse-ci $PUBLIC_URL --score=80 --progress=50
+      - store_artifacts:
+          path: .lighthouse
+
+  build-storybook:
+    <<: *defaults
+    steps:
+      - checkout
+      - *setup-env
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build Storybook
+          command: yarn build-storybook
+      - run:
+          name: Add GitHub Deployment success status
+          command: ./tasks/deployment/end.sh success
+          when: on_success
+      - run:
+          name: Add GitHub Deployment error status
+          command: ./tasks/deployment/end.sh error
+          when: on_fail
+      - store_artifacts:
+          path: storybook-static
+
+workflows:
+  version: 2
+  build-test-deploy:
+    jobs:
+      - install
+      - build-storybook:
+          requires:
+            - install
+      - build-app:
+          requires:
+            - install
+      - test-unit:
+          requires:
+            - install
+      - spellcheck:
+          requires:
+            - install
+      - test-integration:
+          requires:
+            - install
+            - build-app
+            - upload-app
+            - deploy-sockets
+      - upload-app:
+          requires:
+            - build-app
+            - deploy-sockets
+          filters:
+            branches:
+              only: production
+      - upload-staging-app:
+          requires:
+            - build-app
+          filters:
+            branches:
+              only: master
+      - deploy-sockets:
+          requires:
+            - build-app
+      - configure-sentry-deploy-tracking:
+          requires:
+            - upload-app
+          filters:
+            branches:
+              only: production
+      - configure-sentry-deploy-tracking:
+          requires:
+            - upload-staging-app
+          filters:
+            branches:
+              only: master
+      # - report-coverage:
+      #     requires:
+      #       - test-unit
+      #     filters:
+      #       branches:
+      #         only: master

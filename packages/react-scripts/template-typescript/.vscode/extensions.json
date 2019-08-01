@@ -6,6 +6,7 @@
     "wayou.vscode-todo-highlight",
     "jpoissonnier.vscode-styled-components",
     "redhat.vscode-yaml",
-    "alexkrechik.cucumberautocomplete"
+    "alexkrechik.cucumberautocomplete",
+    "streetsidesoftware.code-spell-checker"
   ]
 }

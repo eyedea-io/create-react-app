@@ -1,0 +1,235 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "name": "Socket",
+  "type": "object",
+  "additionalProperties": false,
+  "definitions": {
+    "response": {
+      "allOf": [
+        { "$ref": "http://json-schema.org/draft-07/schema#" },
+        {
+          "properties": {
+            "description": {
+              "type": "string",
+              "title": "Description of response"
+            },
+            "exit_code": {
+              "title": "HTTP status code of response",
+              "type": "number",
+              "enum": [
+                200,
+                201,
+                202,
+                203,
+                204,
+                300,
+                301,
+                302,
+                303,
+                307,
+                308,
+                400,
+                401,
+                402,
+                403,
+                404,
+                405,
+                406,
+                407,
+                500,
+                501,
+                502,
+                503,
+                504
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "description": {
+      "title": "The description schema",
+      "type": "string",
+      "maxLength": 256
+    }
+  },
+  "properties": {
+    "description": {
+      "$ref": "#/definitions/description"
+    },
+    "name": {
+      "title": "Name of the socket",
+      "type": "string",
+      "maxLength": 64,
+      "pattern": "^[?:a-z0-9-_]*$"
+    },
+    "keywords": {
+      "title": "Keywords",
+      "type": "array",
+      "maxItems": 5,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "maxLength": 32
+      }
+    },
+    "runtime": {
+      "title": "Runtime",
+      "type": "string",
+      "enum": ["nodejs_v6", "nodejs_v8"]
+    },
+    "endpoints": {
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "title": "Endpoint name",
+          "type": "object",
+          "properties": {
+            "description": {
+              "$ref": "#/definitions/description"
+            },
+            "inputs": {
+              "$ref": "http://json-schema.org/draft-07/schema#"
+            },
+            "outputs": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "$ref": "#/definitions/response"
+                },
+                "fail": {
+                  "$ref": "#/definitions/response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "event_handlers": {
+      "type": "object"
+    },
+    "events": {
+      "type": "object"
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "description": { "$ref": "#/definitions/description" }
+      }
+    },
+    "classes": {
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "switch": [
+              {
+                "if": {
+                  "properties": {
+                    "type": {
+                      "oneOf": [
+                        { "const": "reference" },
+                        { "const": "relation" }
+                      ]
+                    }
+                  }
+                },
+                "then": { "required": ["name", "type", "target"] },
+                "continue": true
+              },
+              {
+                "if": {
+                  "properties": {
+                    "type": {
+                      "oneOf": [
+                        { "const": "text" },
+                        { "const": "file" },
+                        { "const": "object" }
+                      ]
+                    }
+                  }
+                },
+                "then": {
+                  "prohibited": ["filter_index", "order_index"],
+                  "errorMessage": {
+                    "prohibited": "file, text and object fields can not have any index"
+                  }
+                },
+                "continue": true
+              },
+              {
+                "if": {
+                  "properties": {
+                    "type": {
+                      "oneOf": [
+                        { "const": "array" },
+                        { "const": "geopoint" },
+                        { "const": "relation" }
+                      ]
+                    }
+                  }
+                },
+                "then": {
+                  "prohibited": ["order_index", "unique"],
+                  "errorMessage": {
+                    "prohibited": "array, geopoint and relation can not have order_index or unique"
+                  }
+                },
+                "continue": true
+              },
+              {
+                "if": { "properties": { "type": { "const": "reference" } } },
+                "then": {
+                  "prohibited": ["order_index"],
+                  "errorMessage": {
+                    "prohibited": "reference can not have order_index"
+                  }
+                },
+                "continue": true
+              }
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "string",
+                  "text",
+                  "integer",
+                  "float",
+                  "boolean",
+                  "datetime",
+                  "file",
+                  "reference",
+                  "relation",
+                  "array",
+                  "object",
+                  "geopoint"
+                ]
+              },
+              "target": {
+                "type": "string"
+              },
+              "filter_index": {
+                "type": "boolean"
+              },
+              "order_index": {
+                "type": "boolean"
+              },
+              "unique": {
+                "type": "boolean"
+              }
+            },
+            "required": ["name", "type"]
+          }
+        }
+      }
+    }
+  },
+  "required": ["name"]
+}

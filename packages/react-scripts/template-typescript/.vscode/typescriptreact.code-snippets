@@ -1,0 +1,57 @@
+{
+  "Import smashing components": {
+    "prefix": "im",
+    "body": "import {${2}} from '@smashing/${1|alert,avatar,button,charts,css,dialog,head,menu,overlay,popover,portal,positioner,text-input,theme,title,tooltip,typography|}'",
+    "description": "Import smashing components."
+  },
+  "Import react": {
+    "prefix": "imr",
+    "body": "import * as React from 'react'",
+    "description": "Import react."
+  },
+  "Import styles": {
+    "prefix": "ims",
+    "body": "import * as S from './$TM_FILENAME_BASE.styled'",
+    "description": "Import styled components for current page/component."
+  },
+  "Import components": {
+    "prefix": "imc",
+    "body": "import * as C from './$TM_FILENAME_BASE.components'",
+    "description": "Import components for current page."
+  },
+  "Page template": {
+    "prefix": "page",
+    "body": [
+      "import * as React from 'react'",
+      "import {hot} from 'react-hot-loader/root'",
+      "import {useStore} from '@app/utils/use-store'",
+      "import * as S from './$TM_FILENAME_BASE.styled'",
+      "import * as C from './$TM_FILENAME_BASE.components'\n",
+      "const ${1:PageName}: React.FC = () => {",
+      "\tconst {} = useStore()\n",
+      "\treturn ${2:<div>Hello</div>}",
+      "}\n",
+      "export default hot(${1:PageName})"
+    ],
+    "description": "Import components for current page."
+  },
+  "Styled components file": {
+    "prefix": "page-styled",
+    "body": [
+      "import styled from 'styled-components/macro'\n",
+      "export const ${1:Component} = styled.div`",
+      "\tmargin: 0 auto;",
+      "\tpadding: 0 ${_ => _.theme.spacing.sm};",
+      "`"
+    ]
+  },
+  "Stories file": {
+    "prefix": "stories",
+    "body": [
+      "import React from 'react'",
+      "import ${1:TypeYourPageName} from './${2:TypeFileName}'\n",
+      "export default {title: 'Pages|${1:TypeYourPageName}'}\n",
+      "export const view = () => <${1:TypeYourPageName} />"
+    ]
+  }
+}

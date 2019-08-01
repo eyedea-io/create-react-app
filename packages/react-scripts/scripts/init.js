@@ -97,9 +97,13 @@ module.exports = function(
   appPackage.scripts = {
     dev: 'react-scripts dev',
     build: 'react-scripts build',
-    test: 'react-scripts test',
-    eject: 'react-scripts eject',
-    cypress: 'cypress open',
+    'test-unit': 'react-scripts test',
+    'test-integration': "cypress-tags run -e TAGS='not @todo'",
+    'syncano-types': 's types',
+    storybook: 'start-storybook -p 9009',
+    'build-storybook': 'build-storybook',
+    'upgrade-storybook': "npx npm-check-updates '/storybook/' -un && yarn",
+    'upgrade-smashing': "npx npm-check-updates '/smashing/' -un && yarn",
   };
 
   // Setup the eslint config
@@ -179,6 +183,7 @@ module.exports = function(
     'mobx-react-lite',
     'mobx-state-tree',
     'styled-components',
+    '@types/storybook__react',
     '@types/styled-components',
     '@loadable/component',
     '@types/loadable__component',
@@ -195,6 +200,15 @@ module.exports = function(
     '@smashing/title',
     '@smashing/tooltip',
     '@smashing/typography',
+    '@storybook/addon-actions',
+    '@storybook/addon-backgrounds',
+    '@storybook/addon-console',
+    '@storybook/addon-knobs',
+    '@storybook/addon-links',
+    '@storybook/addon-storysource',
+    '@storybook/addon-viewport',
+    '@storybook/addons',
+    '@storybook/react',
     'cypress'
   );
 
