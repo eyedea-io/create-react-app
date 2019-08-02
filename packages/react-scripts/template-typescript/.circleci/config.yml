@@ -6,14 +6,14 @@ setup-env: &setup-env
     command: |
       if [ "${CIRCLE_BRANCH}" == "production" ]; then
         echo 'export SENTRY_ENV=production' >> $BASH_ENV
-        env=PRODUCTION
+        branchEnv=PRODUCTION
       else
         echo 'export SENTRY_ENV=staging' >> $BASH_ENV
-        env=STAGING
+        branchEnv=STAGING
       fi
 
-      eval echo 'export SYNCANO_PROJECT_INSTANCE=\$${env}_SYNCANO_PROJECT_INSTANCE' >> $BASH_ENV
-      eval echo 'export PUBLIC_URL=\$${env}_PUBLIC_URL' >> $BASH_ENV
+      eval echo "export SYNCANO_PROJECT_INSTANCE=\$${branchEnv}_SYNCANO_PROJECT_INSTANCE" >> $BASH_ENV
+      eval echo "export PUBLIC_URL=\$${branchEnv}_PUBLIC_URL" >> $BASH_ENV
       echo 'export SYNCANO_AUTH_KEY=$SYNCANO_AUTH_KEY' >> $BASH_ENV
 
 defaults: &defaults
@@ -28,32 +28,34 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - cache-v2-{{ checksum "package.json" }}
+            - yarn-{{ checksum "package.json" }}
             # fallback to using the latest cache if no exact match is found
-            - cache-v2-dependencies-
-      - run:
-          name: Create GitHub Deployment
-          command: ./tasks/deployment/start.sh > deployment
+            - yarn-
+      - restore_cache:
+          keys:
+            - cypress-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - cypress-
       - run:
           name: Installing dependencies
           command: yarn --frozen-lockfile
       - save_cache:
           paths:
-            - /root/.cache
-          key: cache-v2-{{ checksum "package.json" }}
+            - /usr/local/share/.cache/yarn
+          key: yarn-{{ checksum "package.json" }}
+      - save_cache:
+          paths:
+            - /root/.cache/Cypress
+          key: cypress-{{ checksum "package.json" }}
       - persist_to_workspace:
           root: .
           paths:
-            - deployment
             - node_modules
 
   spellcheck:
     <<: *defaults
     steps:
       - checkout
-      - *setup-env
-      - attach_workspace:
-          at: .
       - run:
           name: Spellcheck
           command: npx cspell "workspaces/**/*.tsx" "workspaces/**/*.ts"
@@ -93,18 +95,34 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - *setup-env
       - restore_cache:
           keys:
-            - cache-v2-{{ checksum "package.json" }}
+            - cypress-{{ checksum "package.json" }}
             # fallback to using the latest cache if no exact match is found
-            - cache-v2-dependencies-
+            - cypress-
       - attach_workspace:
           at: .
       - run:
+          name: Create GitHub Coverage Deployment
+          command: ./tasks/coverage/start.sh > coverage-deployment
+      - run:
           name: Running unit tests
-          command: yarn test-integration
+          command: CYPRESS_baseUrl=$PUBLIC_URL yarn test-integration
+      - run:
+          name: Add GitHub Coverage Deployment success status
+          command: ./tasks/coverage/end.sh success
+          when: on_success
+      - run:
+          name: Add GitHub Coverage Deployment error status
+          command: ./tasks/coverage/end.sh error
+          when: on_fail
+      - store_artifacts:
+          path: .nyc_output
       - store_artifacts:
           path: cypress
+      - store_artifacts:
+          path: coverage
 
   upload-app:
     <<: *defaults
@@ -191,6 +209,9 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Create GitHub Storybook Deployment
+          command: ./tasks/deployment/start.sh > deployment
+      - run:
           name: Build Storybook
           command: yarn build-storybook
       - run:
@@ -218,9 +239,7 @@ workflows:
       - test-unit:
           requires:
             - install
-      - spellcheck:
-          requires:
-            - install
+      - spellcheck
       - test-integration:
           requires:
             - install

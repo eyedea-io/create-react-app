@@ -1,0 +1,7 @@
+hosting:
+  app:
+    src: build/app
+    config:
+      browser_router: true
+plugins:
+  types: "@syncano/core/lib/cli-plugin"

@@ -9,9 +9,9 @@ const GlobalStyles = createGlobalStyle`
 `
 
 export default () => (
-  <>
+  <React.Fragment>
     <Reset />
     <Normalize />
     <GlobalStyles />
-  </>
+  </React.Fragment>
 )

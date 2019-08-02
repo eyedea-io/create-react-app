@@ -1,4 +1,4 @@
-import App from './global/app'
+import App from './app'
 import React from 'react'
 import {render} from 'react-dom'
 import * as serviceWorker from './utils/service-worker'

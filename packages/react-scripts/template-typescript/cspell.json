@@ -1,0 +1,25 @@
+{
+  // Version of the setting file.  Always 0.1
+  "version": "0.1",
+  // language - current active spelling language
+  "language": "en",
+  // list of the names of the dictionaries to use
+  "dictionaries": [],
+  // flagWords - list of words to be always considered incorrect
+  // This is useful for offensive words and common spelling errors.
+  // For example "hte" should be "the"
+  "flagWords": [],
+  // words - list of words to be always considered correct
+  "words": [
+    "syncano",
+    "mobx",
+    "precached",
+    "onstatechange",
+    "onupdatefound",
+    "storysource",
+    "eval",
+    "CNAME",
+    "repo",
+    "woff"
+  ]
+}
