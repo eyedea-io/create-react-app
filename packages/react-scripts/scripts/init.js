@@ -97,11 +97,11 @@ module.exports = function(
   appPackage.scripts = {
     dev: 'react-scripts dev',
     build: 'react-scripts build',
+    'build-storybook': 'build-storybook',
     'test-unit': 'react-scripts test',
     'test-integration': "cypress-tags run -e TAGS='not @todo'",
     'syncano-types': 's types',
     storybook: 'start-storybook -p 9009',
-    'build-storybook': 'build-storybook',
     'upgrade-storybook': "npx npm-check-updates '/storybook/' -un && yarn",
     'upgrade-smashing': "npx npm-check-updates '/smashing/' -un && yarn",
   };
