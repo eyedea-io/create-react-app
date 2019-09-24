@@ -24,6 +24,8 @@ const scriptIndex = args.findIndex(
     x === 'eject' ||
     x === 'start' ||
     x === 'test' ||
+    x === 'storybook' ||
+    x === 'build-storybook' ||
     x === 'dev'
 );
 let script = scriptIndex === -1 ? args[0] : args[scriptIndex];
@@ -34,6 +36,8 @@ switch (script) {
   case 'build':
   case 'eject':
   case 'start':
+  case 'storybook':
+  case 'build-storybook':
   case 'dev':
   case 'test': {
     const result = spawn.sync(

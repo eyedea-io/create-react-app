@@ -223,7 +223,7 @@ jobs:
           command: ./tasks/deployment/end.sh error
           when: on_fail
       - store_artifacts:
-          path: storybook-static
+          path: build/storybook
 
 workflows:
   version: 2

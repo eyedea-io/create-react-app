@@ -1,39 +1,21 @@
 const path = require('path');
 const resolve = dir => path.resolve(__dirname, dir);
+const webpack = require('webpack');
 
-module.exports = ({ config }) => {
-  config.module.rules.push({
-    test: /\.(ts|tsx)$/,
-    include: path.resolve(__dirname, '../workspaces'),
-    loader: require.resolve('babel-loader'),
-    options: {
-      presets: [['react-app', { flow: false, typescript: true }]],
-    },
+module.exports = props => {
+  const config = require('smashing-scripts/config/storybook/webpack')(props);
+
+  config.resolve.alias = Object.assign(config.resolve.alias, {
+    '@app': resolve('../workspaces/app'),
   });
 
-  config.module.rules.push({
-    test: /\.stories\.tsx?$/,
-    loaders: [require.resolve('@storybook/addon-storysource/loader')],
-    enforce: 'pre',
-  });
-
-  config.module.rules.push({
-    test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-    loaders: 'file-loader',
-    options: {
-      name: '[name].[ext]',
-      outputPath: './fonts/',
-    },
-  });
-
-  config.resolve.extensions.push('.ts', '.tsx');
-
-  config.resolve = Object.assign(config.resolve, {
-    alias: {
-      '@app': resolve('../workspaces/app'),
-      'react-dom': resolve('../node_modules/@hot-loader/react-dom'),
-    },
-  });
+  config.plugins.push(
+    new webpack.DefinePlugin({
+      'process.env.SYNCANO_PROJECT_INSTANCE': JSON.stringify(
+        process.env.SYNCANO_PROJECT_INSTANCE
+      ),
+    })
+  );
 
   return config;
 };

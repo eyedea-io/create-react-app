@@ -79,6 +79,8 @@ const workspace = argv[0];
 // config after eject: we're in ./config/
 module.exports = {
   dotenv: resolveApp('.env'),
+  storybookConfig: resolveApp('.storybook'),
+  storybookOutput: resolveApp('build/storybook'),
   workspaces: resolveApp('workspaces'),
   appPath: resolveApp('.'),
   appBuild: resolveApp(`build/${workspace}`),
@@ -104,6 +106,8 @@ const resolveOwn = relativePath => path.resolve(__dirname, '..', relativePath);
 // config before eject: we're in ./node_modules/react-scripts/config/
 module.exports = {
   dotenv: resolveApp('.env'),
+  storybookConfig: resolveApp('.storybook'),
+  storybookOutput: resolveApp('build/storybook'),
   workspaces: resolveApp('workspaces'),
   appPath: resolveApp('.'),
   appBuild: resolveApp(`build/${workspace}`),

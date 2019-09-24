@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {Link} from 'react-router-dom'
-import * as S from './landing.styled'
+import {Link} from '@reach/router'
+import * as S from './header.styled'
 import {Heading, Text} from '@smashing/typography'
 import {Avatar} from '@smashing/avatar'
 import {Popover} from '@smashing/popover'
@@ -22,10 +22,20 @@ const UserDropdown = (
   </Menu>
 )
 
-export const Header = () => (
+export interface HeaderProps {
+  /**
+   * Page title
+   * @default
+   */
+  title: string
+}
+
+export const Header = ({
+  title
+}: HeaderProps) => (
   <S.Header>
     <Heading as="h1" variant={500} marginTop={0}>
-      Site name
+      {title}
     </Heading>
     <nav>
       <Popover position="bottom-right" content={UserDropdown}>
@@ -39,3 +49,5 @@ export const Header = () => (
     </nav>
   </S.Header>
 )
+
+export default Header

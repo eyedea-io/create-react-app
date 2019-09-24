@@ -97,18 +97,21 @@ module.exports = function(
   appPackage.scripts = {
     dev: 'react-scripts dev',
     build: 'react-scripts build',
-    'build-storybook': 'build-storybook',
+    'build-storybook': 'react-scripts build-storybook',
+    storybook: 'react-scripts storybook',
+    'syncano-types': 's types',
     'test-unit': 'react-scripts test',
     'test-integration': "cypress-tags run -e TAGS='not @todo'",
-    'syncano-types': 's types',
-    storybook: 'start-storybook -p 9009',
-    'upgrade-storybook': "npx npm-check-updates '/storybook/' -un && yarn",
     'upgrade-smashing': "npx npm-check-updates '/smashing/' -un && yarn",
   };
 
   // Setup the eslint config
   appPackage.eslintConfig = {
     extends: 'smashing-app',
+  };
+
+  appPackage.prettier = {
+    printWidth: 120,
   };
 
   // Setup cypress/cucumber integration
@@ -118,6 +121,12 @@ module.exports = function(
 
   // Setup the browsers list
   appPackage.browserslist = defaultBrowsers;
+
+  appPackage.babelMacros = {
+    styledComponents: {
+      pure: true,
+    },
+  };
 
   fs.writeFileSync(
     path.join(appPath, 'package.json'),
@@ -175,41 +184,48 @@ module.exports = function(
     args = ['install', '--save', verbose && '--verbose'].filter(e => e);
   }
   args.push(
-    'react',
-    'react-dom',
-    'react-hot-loader',
-    'react-router-dom',
-    'mobx',
-    'mobx-react-lite',
-    'mobx-state-tree',
-    'styled-components',
-    '@types/storybook__react',
-    '@types/styled-components',
     '@loadable/component',
-    '@types/loadable__component',
-    '@types/react-router-dom',
+    '@reach/router',
     '@smashing/alert',
     '@smashing/avatar',
     '@smashing/button',
+    '@smashing/checkbox',
     '@smashing/css',
     '@smashing/dialog',
+    '@smashing/form',
     '@smashing/head',
+    '@smashing/list',
     '@smashing/menu',
     '@smashing/popover',
+    '@smashing/side-sheet',
+    '@smashing/spinner',
+    '@smashing/tabs',
     '@smashing/text-input',
     '@smashing/title',
+    '@smashing/toaster',
     '@smashing/tooltip',
     '@smashing/typography',
-    '@storybook/addon-actions',
-    '@storybook/addon-backgrounds',
-    '@storybook/addon-console',
-    '@storybook/addon-knobs',
-    '@storybook/addon-links',
-    '@storybook/addon-storysource',
-    '@storybook/addon-viewport',
-    '@storybook/addons',
     '@storybook/react',
-    'cypress'
+    '@syncano/cli',
+    '@syncano/client',
+    '@syncano/core',
+    '@types/loadable__component',
+    '@types/reach__router',
+    '@types/react-router-dom',
+    '@types/storybook__react',
+    '@types/styled-components',
+    '@types/yup',
+    'babel-loader',
+    'cypress',
+    'dayjs',
+    'mobx-react-lite',
+    'mobx-state-tree',
+    'mobx',
+    'react-dom',
+    'react-hot-loader',
+    'react',
+    'styled-components',
+    'yup'
   );
 
   // Install additional template dependencies, if present
@@ -290,7 +306,7 @@ module.exports = function(
   console.log('We suggest that you begin by typing:');
   console.log();
   console.log(chalk.cyan('  cd'), cdpath);
-  console.log(`  ${chalk.cyan(`${displayedCommand} start`)}`);
+  console.log(`  ${chalk.cyan(`${displayedCommand} dev app`)}`);
   if (readmeExists) {
     console.log();
     console.log(
