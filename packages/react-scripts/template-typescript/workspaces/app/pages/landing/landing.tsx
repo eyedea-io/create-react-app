@@ -6,7 +6,7 @@ import {Button} from '@smashing/button'
 import {Dialog} from '@smashing/dialog'
 import {Title} from '@smashing/title'
 import * as S from './landing.styled'
-import * as C from './landing.components'
+import {Header} from '@app/components/header'
 
 const Landing: React.FC = () => {
   const {loremIpsum} = useStore()
@@ -16,7 +16,7 @@ const Landing: React.FC = () => {
     <React.Fragment>
       <Title>Home</Title>
       <S.Wrapper>
-        <C.Header />
+        <Header title="Site name" />
 
         <Paragraph>
           {loremIpsum} <Text intent="danger">Danger text</Text>

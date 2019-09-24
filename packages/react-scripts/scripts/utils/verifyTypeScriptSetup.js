@@ -304,7 +304,15 @@ function verifyTypeScriptSetup() {
   if (!fs.existsSync(paths.appTypeDeclarations)) {
     fs.writeFileSync(
       paths.appTypeDeclarations,
-      `/// <reference types="smashing-scripts" />${os.EOL}`
+      `/// <reference types="smashing-scripts" />${os.EOL}
+
+declare namespace NodeJS {
+  interface ProcessEnv {
+    readonly PUBLIC_URL: string
+    readonly SYNCANO_PROJECT_INSTANCE: string
+  }
+}
+      `
     );
   }
 }
