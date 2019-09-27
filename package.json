@@ -51,5 +51,10 @@
     "yarn.lock": [
       "git rm --cached"
     ]
+  },
+  "prettier": {
+    "semi": false,
+    "bracketSpacing": false,
+    "singleQuote": true
   }
 }
