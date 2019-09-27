@@ -206,7 +206,6 @@ module.exports = function(
     '@smashing/tooltip',
     '@smashing/typography',
     '@storybook/react',
-    '@syncano/cli',
     '@syncano/client',
     '@syncano/core',
     '@types/loadable__component',
