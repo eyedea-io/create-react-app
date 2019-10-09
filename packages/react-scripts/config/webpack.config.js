@@ -74,6 +74,7 @@ try {
 module.exports = function(webpackEnv) {
   const isEnvDevelopment = webpackEnv === 'development';
   const isEnvProduction = webpackEnv === 'production';
+  const isCoverageRequired = Boolean(process.env.COVERAGE)
   // const argv = process.argv.slice(2);
   // const workspace = argv[1];
 
@@ -428,7 +429,7 @@ module.exports = function(webpackEnv) {
                     ? 'production'
                     : isEnvDevelopment && 'development',
                   [
-                    'babel-plugin-istanbul',
+                    isCoverageRequired ? 'babel-plugin-istanbul' : undefined,
                     'babel-plugin-named-asset-import',
                     'babel-preset-react-app',
                     'react-dev-utils',
@@ -449,7 +450,7 @@ module.exports = function(webpackEnv) {
                       },
                     },
                   ],
-                  require.resolve('babel-plugin-istanbul'),
+                  isCoverageRequired ? require.resolve('babel-plugin-istanbul') : {},
                 ],
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
                 // It enables caching results in ./node_modules/.cache/babel-loader/
@@ -483,7 +484,7 @@ module.exports = function(webpackEnv) {
                     ? 'production'
                     : isEnvDevelopment && 'development',
                   [
-                    'babel-plugin-istanbul',
+                    isCoverageRequired ? 'babel-plugin-istanbul' : undefined,
                     'babel-plugin-named-asset-import',
                     'babel-preset-react-app',
                     'react-dev-utils',
